@@ -1,0 +1,26 @@
+/**
+* @param  array $data 带begintime endtime的数组 
+* @param  string $field 时间字段。默认 add_time
+* @param  string $alis 多表查询时，时间字段所在表别名（或表名）,前面带点·，例如 w.
+*/
+function bind_search_time($data=[],$field='add_time',$alis=''){
+	$where='';
+	if(empty($data))return $where;
+	if($alis&&!empty($alis)){
+		$key=$alis.$field;
+	}else{
+		$key=$field;
+	}
+	if(isset($data['begintime'])&&isset($data['endtime'])&&!empty($data['begintime'])&&!empty($data['endtime'])){
+
+            $where[$key] = array(array('gt',strtotime($data['begintime'])),array('lt',strtotime($data['endtime'])),'AND');
+    }else{
+        if(isset($data['begintime'])&&!empty($data['begintime'])){
+            $where[$key]=['<',strtotime($data['begintime'])];
+        }
+        if(isset($data['endtime'])&&!empty($data['endtime'])){
+            $where[$key]=['>',strtotime($data['endtime'])];
+        }
+    }
+    return $where;
+}
